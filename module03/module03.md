@@ -45,8 +45,49 @@
 
     `SELECT table_Schema+'.'+TABLE_NAME AS Table_Name FROM information_Schema.tables WHERE TABLE_SCHEMA = 'SalesLT' AND TABLE_TYPE = 'BASE TABLE'`
 
-    ![Create query for looking up tables](../module03/screen08.png)    
+    ![Create query for looking up tables](../module03/screen08.png)
 
+10. Go back to your pipeline. From the iterations, drag and drop in the ForEach step. For the items, copy paste in the code from below to fetch the results from the previous step. This becomes an argument for all the steps.
+
+    `@activity('GetTables').output.value`
+
+    ![Create ForEach Step](../module03/screen09.png)   
+
+11. Open the ForEach step, configure the connection and define your query to execute. Use the code from the code block below.
+
+    `SELECT * FROM @{item().Table_Name}`
+
+    ![Create a lookup step](../module03/screen10.png)
+
+12. Go to the Sink section of your ForEach step.
+
+    ![Configure Sync](../module03/screen11.png)
+
+13. Search for Azure Data Lake Storage Gen2.
+
+    ![Select ADLS2](../module03/screen12.png)
+
+14. Search for Select Parquet as the target file format.
+
+    ![Select Parquet](../module03/screen12a.png)
+
+15. Configure the file path where the output data will be stored.
+
+    ![Set filepath](../module03/screen12b.png)    
+
+16. Go to your bronze folder, select demodatabase. Click **OK**. When the window closes add the following code block as the file name. This takes the table name argument and stores the output as a parquet file.
+
+    `@{item().Table_Name}.parquet`
+
+    ![Select Parquet file name](../module03/screen12c.png)   
+
+17. Publish your pipeline and Trigger your pipeline.
+
+    ![Tigger pipeline](../module03/screen17.png)
+
+18. Find your Parquet files, click Select Top 100 and validate the results.
+
+    ![Select top 100](../module03/screen18.png)
 
 <div align="right"><a href="#module-03---setup-datalake">↥ back to top</a></div>
 

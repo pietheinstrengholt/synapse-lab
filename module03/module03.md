@@ -94,6 +94,6 @@
 
 ## :tada: Summary
 
-This module provided an overview of how to provision an Azure SQL Database using the Azure Portal.
+This module provided an overview of how to configure your data lake structure and setup your first data pipeline. The output data is just copied and stored as raw data in your bronze layer.
 
 [Continue >](../module04/module04.md)

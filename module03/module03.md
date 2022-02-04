@@ -4,7 +4,7 @@
 
 ## :dart: Objectives
 
-* The objective for this module is to configure your data lake structure. We will use the common bronze, silver and gold layers to demonstrate how you could design your lake. Next we will onboard our first source system. This is the Sample database we created in the previous module. We will use Parquet as the file format and Synapse Pipelines for orchestration.
+* The objective for this module is to configure your data lake structure. We will use the common bronze, silver and gold layers to demonstrate how you could design your lake. Next we will onboard our first source system. This is the Sample database we created in the previous module. We will use Parquet as the file format and Synapse Pipelines for orchestration. During this lab you will make a dynamic pipeline which first retrieves a list of tables from the databases. Next it will iterate, extract and copy table after table to your Storage Account.
 
 ## 1. Create Data Lake folder structure
 

@@ -25,16 +25,15 @@ To create and use the Azure Synapse workspace, you will need to provision an Azu
 
 4. Provide a sql username and password **Review + create**.
 
-    ![Create a Resource](../module01/screen02.png)  
+    ![Provide credentials](../module01/screen02.png)  
 
 5. On the **Review + Create** tab, once the message in the ribbon returns "Validation passed", verify your selections and click **Create**.
 
-    ![Create a Resource](../module01/screen03.png)  
+    ![Review and complete](../module01/screen03.png)  
 
 6. Wait several minutes while your deployment is in progress. Once complete, click **Go to resource**.
 
 <div align="right"><a href="#module-01---create-an-azure-synapse-workspace">↥ back to top</a></div>
-
 
 ## :tada: Summary
 

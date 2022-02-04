@@ -16,15 +16,15 @@
 
 4. Provide a Azure SQL account name, provide a sql username and password. Click on **OK**.
 
-    ![Create a Resource](../module02/screen02.png)  
+    ![Provide details](../module02/screen02.png)  
 
 5. On the **database** section, provide your database details. Click **Next** and navigate to the additional settings.
 
-    ![Create a Resource](../module02/screen03.png)
+    ![Use Sample database](../module02/screen03.png)
 
 6. On the **additional settings** section, ensure the Sample database is selected. Click **Review + Create** to complete.
 
-    ![Create a Resource](../module02/screen04.png)  
+    ![Review and complete](../module02/screen04.png)  
 
 7. Wait several minutes while your deployment is in progress. Once complete, click **Go to resource**.
 

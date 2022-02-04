@@ -35,4 +35,4 @@
 
 This module provided an overview of how to provision an Azure SQL Database using the Azure Portal.
 
-[Continue >](../modules03/module03.md)
+[Continue >](../module03/module03.md)

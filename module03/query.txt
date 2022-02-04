@@ -7,3 +7,5 @@ SELECT * FROM @{item().Table_Name}
 UPDATE [SalesLT].[Customer] 
 SET FirstName = 'Jason'
 WHERE CustomerID = 1
+
+@{item().Table_Name}.parquet

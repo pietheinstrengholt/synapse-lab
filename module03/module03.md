@@ -4,8 +4,7 @@
 
 ## :dart: Objectives
 
-* Create folder structure for datalake.
-* Allow Azure Services to access Azure SQL database.
+* The objective for this module is to configure your data lake structure. We will use the common bronze, silver and gold layers to demonstrate how you could design your lake. Next we will onboard our first source system. This is the Sample database we created in the previous module. We will use Parquet as the file format and Synapse Pipelines for orchestration.
 
 ## 1. Create Data Lake folder structure
 
@@ -85,7 +84,7 @@
 
     ![Tigger pipeline](../module03/screen17.png)
 
-18. Find your Parquet files, click Select Top 100 and validate the results.
+18. Go to data on the left. Find your storage account and navigate to your bronze layer, where you should be able to find your Parquet files. Click Select Top 100 and validate the results.
 
     ![Select top 100](../module03/screen18.png)
 

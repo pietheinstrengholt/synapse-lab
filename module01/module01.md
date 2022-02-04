@@ -40,4 +40,4 @@ To create and use the Azure Synapse workspace, you will need to provision an Azu
 
 This module provided an overview of how to provision an Azure Synapse workspace using the Azure Portal.
 
-[Continue >](../modules02/module02.md)
+[Continue >](../module02/module02.md)

@@ -18,6 +18,34 @@
 
     [BronzeToSilver.py](../module04/BronzeToSilver.py)
 
+    ```
+    # Set arguments
+    dfDataOriginalPath = "/bronze/"
+    dfDataChangedPath = "/silver/"
+    cw_database = "demodatabase"
+    cw_table = "SalesLT.Address"
+    ```
+
+    ```
+    %%pyspark
+
+    from pyspark import *
+    from pyspark.sql.window import Window
+    from pyspark.sql.functions import *
+    from pyspark.sql import Row
+    from pyspark.sql.types import StructType, StructField, IntegerType, StringType, TimestampType, BooleanType, DateType
+    from typing import List
+    from datetime import datetime
+
+    print("Database: " + cw_database)
+    print("Table: " + cw_table)
+
+    # Read CSV data from landing zone location
+    dataChanged = spark.read.load('abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net/' + dfDataOriginalPath + cw_database + '/' + cw_table + '.parquet', format='parquet', header=True)
+    dataChanged.printSchema()
+    dataChanged.show()
+    ```
+
 3. When ready and tested, go back to your Pipeline, open the ForEach and drag in a Notebook Step. Select the spark pool, notebook and configure the arguments. These will be passed into our script.
 
     ![Add notebook step](../module04/screen03.png)

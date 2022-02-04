@@ -1,6 +1,6 @@
 # Module 01 - Create an Azure Synapse Workspace
 
-[< Previous Module](../module01/module01.md) - **[Home](../README.md)** - [Next Module >](../module02/module02.md)
+[[Home](../README.md) - [Next Module >](../module02/module02.md)
 
 ## :thinking: Prerequisites
 

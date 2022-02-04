@@ -1,6 +1,6 @@
 # Module 02 - Create an Azure SQL Database
 
-[< Previous Module](../module02/module02.md) - **[Home](../README.md)** - [Next Module >](../module03/module03.md)
+[< Previous Module](../module01/module01.md) - **[Home](../README.md)** - [Next Module >](../module03/module03.md)
 
 ## :dart: Objectives
 

@@ -1,0 +1,9 @@
+SELECT table_Schema+'.'+TABLE_NAME AS Table_Name FROM information_Schema.tables WHERE TABLE_SCHEMA = 'SalesLT' AND TABLE_TYPE = 'BASE TABLE'
+
+@activity('GetTables').output.value
+
+SELECT * FROM @{item().Table_Name}
+
+UPDATE [SalesLT].[Customer] 
+SET FirstName = 'Jason'
+WHERE CustomerID = 1

@@ -8,7 +8,7 @@
 
 ## 1. Deploy Spark Pool
 
-1. Open Synapse Studio, Navigate to Developm and create a new script.
+1. Open Synapse Studio, Navigate to Development and create a new script.
 
 2. Create a new database using the following SQL statement: `CREATE DATABASE customers;`
 
@@ -105,7 +105,8 @@
     ```sql
     CREATE PROC createCustomerAddresses
     AS
-        BEGIN
+    BEGIN
+        BEGIN TRY
             -- Create parquetfile format
             IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_file_formats WHERE name = 'parquetfile')
                 CREATE EXTERNAL FILE FORMAT parquetfile WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec')
@@ -163,7 +164,11 @@
                 ) AS [Address] WHERE [current] = 'True') AS Address
             ON (CustomerAddress.AddressID = Address.AddressID)
             ORDER BY customer.CustomerId
-        END
+        END TRY
+        BEGIN CATCH
+            PRINT 'Error creating External table'
+        END CATCH
+    END
     ```
 
 9. For the dropCustomerAddresses use the following code block. Copy paste it in and hit execute:
@@ -171,10 +176,15 @@
     ```sql
     CREATE PROC dropCustomerAddresses
     AS
-        BEGIN
-            IF EXISTS (SELECT COUNT(*) FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.CustomerAddresses'))
+    BEGIN
+        BEGIN TRY
+            IF EXISTS (SELECT * FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.CustomerAddresses'))
                 DROP EXTERNAL TABLE dbo.CustomerAddresses
-        END
+        END TRY
+        BEGIN CATCH
+            PRINT 'Error dropping External table'
+        END CATCH
+    END
     ```
 
 10. You can now test your stored procedures by running: `EXEC createCustomerAddresses;`. Check and validate that the external table is created again. Also validate that the folder is created within your storage account. For deleting your external table you can use: `EXEC dropCustomerAddresses;`. Validate that your external table is indeed removed. You also need to remove your customeraddresses folder within your gold layer. You can do this by hand or by triggering your pipeline.

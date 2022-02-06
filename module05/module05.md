@@ -93,9 +93,10 @@
 
 6. The parquet files on your storate account will still exist. Therefore we need to modify the data pipeline to ensure also the directory and parquet files will be deleted. Drag and drop the delete action from the General section. Select your storage account and navigate to your gold layer, select your demodatabase. Under Source, select **File path in dataset**. Also ensure **Recursive** is selected.
 
+    ![Create delete step](../module05/screen05.png)
+
     ![Configure file path](../module05/screen06.png)
 
-    ![Create delete step](../module05/screen05.png)
 
 7. Trigger the pipeline. Ensure the customeraddresses folder within your gold layer is correctly deleted.
 

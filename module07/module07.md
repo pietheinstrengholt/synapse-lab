@@ -158,6 +158,10 @@
     | evaluate pivot(varid)
     ```
 
+8. Execute some of these queries to see how fast Data Explorer is able to process your data. Remember, you're querying more than 1.3 billion rows of data!
+
+    ![Validate external table](../module07/screen07.png)
+
 <div align="right"><a href="#module-04---setup-delta">↥ back to top</a></div>
 
 

@@ -168,6 +168,8 @@
 
 ## :tada: Summary
 
-In this module module you used Spark to transform your data into Slowly Changing Dimension, stored using Delta. The Notebook you added to your pipeline.
+In this module module you used Spark to transform your data into Slowly Changing Dimension, stored using Delta. The Notebook you added to your pipeline. More information:
+
+- https://docs.microsoft.com/en-us/learn/paths/perform-data-engineering-with-azure-synapse-apache-spark-pools/
 
 [Continue >](../module05/module05.md)

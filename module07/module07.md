@@ -162,7 +162,11 @@
 
     ![Validate external table](../module07/screen07.png)
 
-<div align="right"><a href="#module-04---setup-delta">↥ back to top</a></div>
+9. The same queries you can also execute from your Synapse Studio. Go to Develop, click new KSQL Script, and copy paste the contents from Data Explorer.
+
+    ![Validate external table](../module07/screen08.png)
+
+<div align="right"><a href="#module-07---data-explorer">↥ back to top</a></div>
 
 
 ## :tada: Summary
@@ -172,4 +176,4 @@ In this module module you learned how to provision and use a Data Explorer Datab
 - https://docs.microsoft.com/en-us/azure/data-explorer/
 - https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/
 
-[Continue >](../module07/module07.md)
+[Continue >](../module08/module08.md)

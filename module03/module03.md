@@ -20,6 +20,8 @@
 
     ![Configure Firewall](../module03/screen02a.png)
 
+## 2. Create Linked Service
+
 4. Open Synapse Studio and navigate to Linked Services under Management. Click on **New**.
 
     ![Create a linked service](../module03/screen03.png)  
@@ -31,6 +33,8 @@
 6. Select your newly created Azure SQL database from your subscription and resource list. Provide your SQL credentials. Hit test connection and click on **Create**.
 
     ![Create a linked service](../module03/screen05.png)
+
+## 3. Build new pipeline
 
 7. Next we will create a new Pipeline. Click on Integrate and **Create a new pipeline**.
 
@@ -89,7 +93,6 @@
     ![Select top 100](../module03/screen18.png)
 
 <div align="right"><a href="#module-03---setup-datalake">↥ back to top</a></div>
-
 
 ## :tada: Summary
 

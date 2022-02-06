@@ -100,7 +100,7 @@
 
     ![Validate external table](../module06/screen04.png)
 
-<div align="right"><a href="#module-04---setup-delta">↥ back to top</a></div>
+<div align="right"><a href="#module-06---dedicated-pool">↥ back to top</a></div>
 
 
 ## :tada: Summary

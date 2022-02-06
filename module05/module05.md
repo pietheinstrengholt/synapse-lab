@@ -222,7 +222,7 @@
 
     ![Configure linked service](../module05/screen11.png)
 
-<div align="right"><a href="#module-04---setup-delta">↥ back to top</a></div>
+<div align="right"><a href="#module-05---serverless-pool">↥ back to top</a></div>
 
 
 ## :tada: Summary

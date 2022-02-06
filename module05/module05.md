@@ -6,7 +6,7 @@
 
 * The objective for this module is to move data from the silver layer to gold layer using a stored procedure and a Serverless Pool. In this example you will use an external table format, which stored data into Parquet. You will use two stored procedures and add a delete step to the data pipeline.
 
-## 1. Deploy Spark Pool
+## 1. Create External Tables
 
 1. Open Synapse Studio, Navigate to Development and create a new script.
 
@@ -100,6 +100,8 @@
 
 7. Trigger the pipeline. Ensure the customeraddresses folder within your gold layer is correctly deleted.
 
+## 2. Create Stored Procedures
+
 8. Head back to the develop selection. We will create two stored procedures. A stored procedure is prepared set of SQL code that you can save within the database. This allows you to reuse the code over and over again. For the createCustomerAddresses use the following code block. Copy paste it in and hit execute:
 
     ```sql
@@ -191,6 +193,7 @@
 
     ![dropCustomerAddresses](../module05/screen07.png)
 
+## 3. Update data pipeline
 
 11. Next you will automate your stored procedures by adding these to your data pipeline. For making a connection to your SQL Serverless Pool you need to use the fully qualified domain name. Go to settings, find your serverless pool and copy paste your domain name to a clipboard:
 

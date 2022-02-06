@@ -170,4 +170,4 @@
 
 In this module module you used Spark to transform your data into Slowly Changing Dimension, stored using Delta. The Notebook you added to your pipeline.
 
-[Continue >](../module04/module04.md)
+[Continue >](../module05/module05.md)

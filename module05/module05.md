@@ -225,4 +225,4 @@ In this module module you used Stored Procedures and a Serverless Pool to enrich
 - https://docs.microsoft.com/en-us/learn/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/4-pool-stored-procedures-synapse-pipelines
 - https://docs.microsoft.com/en-us/sql/t-sql/statements/create-procedure-transact-sql?view=sql-server-ver15
 
-[Continue >](../module04/module04.md)
+[Continue >](../module06/module06.md)

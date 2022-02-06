@@ -218,7 +218,7 @@
 
     ![Configure linked service](../module05/screen10.png)
 
-14. Trigger your pipeline. From this point you connected all data lake layers. First the raw data is pulled into the bronze layer. Next it is moved into silver in which you use a standardized file format: Delta. Also the data is versioned, so you can time-travel and fall back. Lastly you selected all 'Current' data, combined and selected, and moved the result into a gold layer.
+14. Trigger your pipeline. From this point you connected all data lake layers. First, raw data is pulled into the bronze layer. Second, it is moved into silver in which you use a standardized file format: Delta. Also the data is versioned, so you can time-travel and fall back. Finally, you selected only 'current' data from Silver, integrated and selected it, and moved your results into the gold layer.
 
     ![Configure linked service](../module05/screen11.png)
 

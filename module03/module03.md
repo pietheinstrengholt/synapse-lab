@@ -93,6 +93,8 @@
 
 ## :tada: Summary
 
-This module provided an overview of how to configure your data lake structure and setup your first data pipeline. The output data is just copied and stored as raw data in your bronze layer.
+In this module you learned about configuring your data lake structure and setting up your first data pipeline. You learned how to extract your sample database and store data as raw data in your bronze layer. More information:
+
+- https://github.com/rukmani-msft/adlsguidancedoc/blob/master/Hitchhikers_Guide_to_the_Datalake.md
 
 [Continue >](../module04/module04.md)

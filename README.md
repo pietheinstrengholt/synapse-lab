@@ -15,7 +15,7 @@ Azure Synapse Analytics is a limitless analytics service that brings together da
 2. [Deploy Azure SQL](./module02/module02.md)
 3. [Setup Data Lake, Ingest data to Bronze layer (Parquet)](./module03/module03.md)
 4. [Create Spark Script, Process to Silver layer (Delta)](./module04/module04.md)
-5. [Create SQL Serverless Script, Process to Gold layer (External table)](./module05/module05.md)
+5. [Create Stored Procedures, Process to Gold layer (External table)](./module05/module05.md)
 6. [Dedicated Pool](./module06/module06.md)
 
 <div align="right"><a href="#azure-synapse-workshop">↥ back to top</a></div>

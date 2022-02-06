@@ -10,7 +10,7 @@
 
 1. Open Synapse Studio, Navigate to Manage, SQL pools. Create a new dedicated pool.
 
-    ![Validate external table](../module06/screen01.png)
+    ![Create dedicated pool](../module06/screen01.png)
 
 2. Navigate to Development and create a new script. Select your newly created dedicated pool, and copy paste the following code:
 
@@ -59,7 +59,7 @@
     GO
     ```
 
-    ![Validate external table](../module06/screen02.png)
+    ![Create external table](../module06/screen02.png)
 
     The script is similar to the script you've used for your Serverless Pool. You can test your external table by running the following SQL Statement: `SELECT * FROM ExternalCustomerAddresses;`
 
@@ -84,7 +84,7 @@
     WITH (CLUSTERED COLUMNSTORE INDEX, DISTRIBUTION = HASH([CustomerId]));
     ```
 
-    ![Validate external table](../module06/screen03.png)
+    ![Create table](../module06/screen03.png)
 
 4. Next you can transfer data from your external table into your newly created table within the dedicated pool. Run the following code to select all data from your external table and insert it into your table within the dedicated pool.
 
@@ -98,7 +98,7 @@
 
     You can query your data using the following statement: `SELECT * FROM CustomerAddresses;`
 
-    ![Validate external table](../module06/screen04.png)
+    ![Transfer data](../module06/screen04.png)
 
 <div align="right"><a href="#module-06---dedicated-pool">↥ back to top</a></div>
 

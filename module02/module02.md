@@ -1,4 +1,4 @@
-# Module 02 - Create an Azure SQL Database
+# Module 02 - Create an Azure SQL Database using AdventureWorks Sample database
 
 [< Previous Module](../module01/module01.md) - **[Home](../README.md)** - [Next Module >](../module03/module03.md)
 

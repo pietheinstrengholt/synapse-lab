@@ -120,17 +120,17 @@
 
 6. Next you need to create a new Data Explorer database. Go to the data section, click on the + symbol, choose Create new Data Explorer Database. The new database name should match the **kustoDatabase** option in the script, which in your case is: `imkustodb`.
 
-    ![new Data Explorer database](../module07/screen04.png)
+    ![New Data Explorer database](../module07/screen04.png)
 
 7. When ready, execute the last code blocks of your Python script. This part will take a while. When ready, you should see the newly created **vardata** table under your newly created database.
 
-    ![Validate external table](../module07/screen05.png)
+    ![Vardata](../module07/screen05.png)
 
 ## 4. Analyze your data
 
 8. Next, you can open your Data Explorer Database and start writing some Kusto queries to analyze your data. Right click to open your database.
 
-    ![Validate external table](../module07/screen06.png)
+    ![Analyze your data](../module07/screen06.png)
 
 9. Open your database and copy paste the following code from below:
 
@@ -166,11 +166,11 @@
 
 8. Execute some of these queries to see how fast Data Explorer is able to process your data. Remember, you're querying more than 1.3 billion rows of data!
 
-    ![Validate external table](../module07/screen07.png)
+    ![Analyze your data](../module07/screen07.png)
 
 9. The same queries you can also execute from your Synapse Studio. Go to Develop, click new KSQL Script, and copy paste the contents from Data Explorer.
 
-    ![Validate external table](../module07/screen08.png)
+    ![Analyze your data](../module07/screen08.png)
 
 <div align="right"><a href="#module-07---data-explorer">↥ back to top</a></div>
 

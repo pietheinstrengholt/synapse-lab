@@ -171,6 +171,7 @@
             PRINT 'Error creating External table'
         END CATCH
     END
+    GO
     ```
 
 9. For the dropCustomerAddresses use the following code block. Copy paste it in and hit execute:
@@ -187,6 +188,7 @@
             PRINT 'Error dropping External table'
         END CATCH
     END
+    GO
     ```
 
 10. You can now test your stored procedures by running: `EXEC createCustomerAddresses;`. Check and validate that the external table is created again. Also validate that the folder is created within your storage account. For deleting your external table you can use: `EXEC dropCustomerAddresses;`. Validate that your external table is indeed removed. You also need to remove your customeraddresses folder within your gold layer. You can do this by hand or by triggering your pipeline.

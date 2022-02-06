@@ -1,16 +1,18 @@
-# Module 06 - Create and use a Data Explorer Pool
+# Module 07 - Analyze data using Azure Synapse Data Explorer
 
 [< Previous Module](../module06/module06.md) - **[Home](../README.md)** - [Next Module >](../module08/module08.md)
 
 ## :dart: Objectives
 
-* The objective for this module is to use a Azure Data Explorer, which is a fast, fully managed data analytics service for real-time analysis on large volumes of data streaming from applications, websites, IoT devices, and more. In this exercise we will use Spark to generate over 1.3 billion rows of data with randomized data. This data you'll push into Azure Data Explorer for later analysis.
+* The objective for this module is to analyze data using Azure Synapse Data Explorer, which provides customers with an interactive query experience to unlock insights from log and telemetry data. To complement existing SQL and Apache Spark analytics runtime engines, the Data Explorer analytics runtime is optimized for efficient log analytics using powerful indexing technology to automatically index free-text and semi-structured data commonly found in telemetry data.In this exercise we will use Spark to generate over 1.3 billion rows of data with randomized data. This data you'll push into Azure Data Explorer for later analysis.
 
-## 1. Deploy Dedicated Pool
+## 1. Deploy Kusto Pool
 
 1. Open Synapse Studio, Navigate to Manage, Kusto Pools. Create a new Kusto Pool.
 
     ![Kusto Pool](../module07/screen01.png)
+
+## 2. Generate random data
 
 2. Navigate to Development and create a new Notebook. Select the Spark Pool, and copy paste the following code:
 
@@ -90,6 +92,8 @@
 
 3. Run the code and wait for a couple of minutes. The script creates more than 1.3 billion rows of data with randomized data.
 
+## 3. Transfer data into Kusto
+
 4. If everything works as expected, go back to your Data Explorer Pool and lookup the connection details. Copy the Query endpoint to a clipboard.
 
     ![Data Explorer Pool](../module07/screen02.png)
@@ -121,6 +125,8 @@
 7. When ready, execute the last code blocks of your Python script. This part will take a while. When ready, you should see the newly created **vardata** table under your newly created database.
 
     ![Validate external table](../module07/screen05.png)
+
+## 4. Analyze your data
 
 8. Next, you can open your Data Explorer Database and start writing some Kusto queries to analyze your data. Right click to open your database.
 

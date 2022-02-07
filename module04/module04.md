@@ -4,15 +4,15 @@
 
 ## :dart: Objectives
 
-* The objective for this module is to move data from our bronze layer into the silver layer. In the bronze layer data typically has different file types and formats, while in the Silver layer we standardize on a fixed file format. In our example we will use Delta as the file format. Also we will use Spark to process any data.
+* Processing data within data lakes is a complicated task. The variety and multitude of sources quickly make data pipelines chaotic and difficult to handle. A solution for this problem is to follow the mantra of ‘code once use often’ by making your pipelines more dynamic and configurable. The objective for this module is to create such a dynamic pipeline. You will use it move data from your Bronze layer into the Silver layer. In the bronze layer data typically has different file types and formats, while in the Silver layer you standardize on a fixed file format. In this module you will use Delta as the standardized file format. You will also use Spark to process your data.
 
 ## 1. Deploy Spark Pool and create Notebook
 
-1. Navigate to managed environment and create a new Spark Pool.
+1. First, you need to create a Spark Pool for processing your data. Spark carries it name from Apache Spark, which is an open-source unified analytics engine for large-scale data processing. To create such an engine, navigate to managed environment and create a new Spark Pool.
 
     ![Spark Pool](../module04/screen01.png)
 
-2. Next go to Develop and create your first notebook: **BronzeToSilver**. For our demo pipeline you create a new notebook and start with a **parameter cell**, defining the paths for storing data. The cw_database and cw_table are for this demo pre-populated, but will be overwritten when arguments are correctly set with the database and table names. For the data itself we will use slowly changing dimensions, so each time data is changed, we will compare it with the previous dataset and add it. Within the script I've defined a section for the primary keys. Feel free to add more keys. Don't forget to replace the location of your storage account to the folder you've created!
+2. Next, you will create your first Notebook for developing code. Go to Develop and create your first notebook: **BronzeToSilver**. For our demo pipeline you create a new notebook and start with a **parameter cell**, defining the paths for storing data. The cw_database and cw_table are for this demo pre-populated, but will be overwritten when arguments are correctly set with the database and table names. For the data itself we will use slowly changing dimensions, so each time data is changed, we will compare it with the previous dataset and add it. Within the script I've defined a section for the primary keys. Feel free to add more keys. Don't forget to replace the location of your storage account to the folder you've created!
 
     ![Create Script](../module04/screen02.png)
 

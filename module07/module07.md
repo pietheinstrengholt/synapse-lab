@@ -172,7 +172,7 @@
 
     ![Analyze your data](../module07/screen08.png)
 
-<div align="right"><a href="#module-07---data-explorer">↥ back to top</a></div>
+<div align="right"><a href="#module-07---analyze-data-using-azure-synapse-data-explorer">↥ back to top</a></div>
 
 
 ## :tada: Summary

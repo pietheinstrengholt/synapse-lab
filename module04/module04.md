@@ -163,7 +163,7 @@
 
     ![Validate SCD2](../module04/screen07.png)  
 
-<div align="right"><a href="#module-04---setup-delta">↥ back to top</a></div>
+<div align="right"><a href="#module-04---create-spark-script-process-to-silver-layer-delta">↥ back to top</a></div>
 
 
 ## :tada: Summary

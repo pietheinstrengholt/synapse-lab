@@ -28,7 +28,7 @@
 
 7. Wait several minutes while your deployment is in progress. Once complete, click **Go to resource**.
 
-<div align="right"><a href="#module-02---create-an-azure-sql-database">↥ back to top</a></div>
+<div align="right"><a href="#module-02---create-an-azure-sql-database-using-adventureworks-sample-database">↥ back to top</a></div>
 
 
 ## :tada: Summary

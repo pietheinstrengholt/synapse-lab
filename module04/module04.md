@@ -161,7 +161,28 @@
 
 7. Head back to your Synapse Studio, Trigger the workflow again and validate that your slowly changing dimension works as expected:
 
-    ![Validate SCD2](../module04/screen07.png)  
+    ![Validate SCD2](../module04/screen07.png)
+
+8. If you want to examine your delta files, or write some additional Python code for analyzing or working with these files, you could create a new Notebook and experiment using the following lines of code:
+
+    ```python
+    %%sql
+    CREATE DATABASE delta
+
+    %%spark
+    spark.sql("CREATE TABLE delta.Customer USING DELTA LOCATION 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net/silver/demodatabase/SalesLT.Customer'")
+
+    %%sql
+    DESCRIBE delta.Customer
+
+    %%sql
+    DESCRIBE HISTORY delta.Customer
+
+    %%sql
+    RESTORE TABLE delta.Customer TO VERSION AS OF 15
+    ```
+
+    ![Validate SCD2](../module04/screen08.png)  
 
 <div align="right"><a href="#module-04---create-spark-script-process-to-silver-layer-delta">↥ back to top</a></div>
 

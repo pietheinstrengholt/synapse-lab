@@ -192,5 +192,9 @@
 In this module module you used Spark to transform your data into Slowly Changing Dimension, stored using Delta. The Notebook you added to your pipeline. More information:
 
 - https://docs.microsoft.com/en-us/learn/paths/perform-data-engineering-with-azure-synapse-apache-spark-pools/
+- https://piethein.medium.com/scd2-delta-tables-using-synapse-spark-pools-c1c3a6115f5d
+- https://piethein.medium.com/modern-data-pipelines-with-azure-synapse-analytics-and-azure-purview-fe752d874c67
+- https://docs.databricks.com/delta/quick-start.html
+
 
 [Continue >](../module05/module05.md)

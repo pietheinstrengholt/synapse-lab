@@ -92,7 +92,7 @@
 
 3. Run the code and wait for a couple of minutes. The script creates more than 1.3 billion rows of data with randomized data.
 
-## 3. Transfer data into Kusto
+## 3. Transfer data to Kusto
 
 4. If everything works as expected, go back to your Data Explorer Pool and lookup the connection details. Copy the Query endpoint to a clipboard.
 

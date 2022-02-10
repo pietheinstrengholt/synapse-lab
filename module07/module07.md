@@ -1,185 +1,112 @@
-# Module 07 - Analyze data using Azure Synapse Data Explorer
+# Module 07 - Create and use a Dedicated SQL Pool
 
-[< Previous Module](../module06/module06.md) - **[Home](../README.md)** - [Next Module >](../module08/module08.md)
+[< Previous Module](../module05/module05.md) - **[Home](../README.md)** - [Next Module >](../module07/module07.md)
 
 ## :dart: Objectives
 
-* The objective for this module is to analyze data using Azure Synapse Data Explorer, which provides customers with an interactive query experience to unlock insights from log and telemetry data. To complement existing SQL and Apache Spark analytics runtime engines, the Data Explorer analytics runtime is optimized for efficient log analytics using powerful indexing technology to automatically index free-text and semi-structured data commonly found in telemetry data.In this exercise we will use Spark to generate over 1.3 billion rows of data with randomized data. This data you'll push into Azure Data Explorer for later analysis.
+* The objective for this module is to move data from the gold layer to a dedicated SQL pool.
 
-## 1. Deploy Kusto Pool
+## 1. Deploy Dedicated Pool
 
-1. Open Synapse Studio, Navigate to Manage, Kusto Pools. Create a new Kusto Pool.
+1. Open Synapse Studio, Navigate to Manage, SQL pools. Create a new dedicated pool.
 
-    ![Kusto Pool](../module07/screen01.png)
+    ![Create dedicated pool](../module07/screen01.png)
 
-## 2. Generate random data
+2. Navigate to Development and create a new script. Select your newly created dedicated pool, and copy paste the following code:
 
-2. Navigate to Development and create a new Notebook. Select the Spark Pool, and copy paste the following code:
+    ```sql
+    --Script for Dedicated Pool
+    USE dedicated01;
 
-    ```python
-    #Generate Random Data
-    from pyspark import SparkContext
-    from pyspark.sql import SparkSession
-    from datetime import datetime, timedelta
-    import pandas as pd
-    from pandas.tseries.offsets import BDay
-    import pyspark.sql.functions as F
-    from pyspark.sql.functions import col, coalesce, lit
-    from pyspark.sql.types import DoubleType
-    import random
+    --Attach external table, which we created on the Serverless pool
+    IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'parquetfile') 
+        CREATE EXTERNAL FILE FORMAT [parquetfile] 
+        WITH ( FORMAT_TYPE = PARQUET)
+    GO
 
-    daterange=pd.date_range("1900-01-01", "2150-01-01", freq='D')
-    bdaterange=pd.date_range("1900-01-01", "2150-01-01", freq='B') 
-    bmdaterange=pd.date_range("1900-01-01", "2150-01-01", freq='BM')
-    daily = pd.DataFrame(index=daterange,columns=['serial'])
-    bdaily = pd.DataFrame(index=bdaterange,columns=['wserial'])
-    bme = pd.DataFrame(index=bmdaterange,columns=['bmeserial'])
-    daily['serial'] = range(2, 2+len(daily.index))
-    bdaily['wserial'] = range(1, 1 + len(bdaily.index))
-    bme['bmeserial'] = True
-    bdaily2 = bdaily.reset_index()
-    daily2 = daily.reset_index()
-    bme2 = bme.reset_index()
-    bdaily_spark = spark.createDataFrame(bdaily2)
-    daily_spark = spark.createDataFrame(daily2)
-    bme_spark = spark.createDataFrame(bme2)
+    IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore') 
+        CREATE EXTERNAL DATA SOURCE [AzureDataLakeStore] 
+        WITH (
+            LOCATION = 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net', 
+            TYPE = HADOOP 
+        )
+    GO
 
-    alldates = (
-    daily_spark
-    .join(bdaily_spark, on="index", how='left')
-    .join(bme_spark, on="index", how='left')
-    .withColumn('Date', col("index").cast('date'))
-    .select('Date', 'Serial', 'WSerial', coalesce(col('bmeserial'), lit(False)).alias('MonthEnd'))
-    .withColumn("serial", col("serial").cast("int"))
-    .withColumn("wserial", col("wserial").cast("int"))
-    ).cache()
+    IF EXISTS (SELECT * FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.ExternalCustomerAddresses'))
+        DROP EXTERNAL TABLE ExternalCustomerAddresses
+    GO
 
-    dates = (
-    alldates
-    .where("date<='2021-11-05'")
-    .orderBy(col("date").desc())
-    .limit(261*5)
-    .select("date").cache()
-    )
-
-    secids = ( spark.createDataFrame(
-        [[x] for x in range(10000)],
-        ["secid"]
-    )
-    .withColumn("secid", col("secid")
-    .cast("int"))
-    .cache()
-    )
-
-    dataitems = ( spark.createDataFrame(
-        [[x] for x in range(100)],
-        ["varid"]
-    )
-    .withColumn("varid", col("varid")
-    .cast("int"))
-    .cache()
-    )
-
-    def getRand():
-    return random.uniform(-1, 1)
-    udfgetRand = F.udf(getRand, DoubleType())
-    vardata = secids.crossJoin(dates).crossJoin(dataitems).withColumn("value", udfgetRand()).cache()
-
-    vardata.count()
+    CREATE EXTERNAL TABLE ExternalCustomerAddresses (
+        [CustomerId]        INT             NOT NULL,
+        [Title]             VARCHAR (50)    NULL,
+        [FirstName]         VARCHAR (1024)    NULL,
+        [MiddleName]        VARCHAR (1024)    NULL,
+        [LastName]          VARCHAR (1024)    NULL,
+        [Suffix]            VARCHAR (30)    NULL,
+        [AddressType]       VARCHAR (1024)    NULL,
+        [AddressLine1]      VARCHAR (1024)    NULL,
+        [AddressLine2]      VARCHAR (1024)    NULL,
+        [City]              VARCHAR (1024)    NULL,
+        [StateProvince]     VARCHAR (1024)    NULL,
+        [CountryRegion]     VARCHAR (1024)    NULL,
+        [PostalCode]        VARCHAR (50)    NULL
+        )
+        WITH (
+        LOCATION = 'gold/demodatabase/customeraddresses',
+        DATA_SOURCE = [AzureDataLakeStore],
+        FILE_FORMAT = [parquetfile]
+        )
+    GO
     ```
 
-    ![Kusto Pool Details](../module07/screen03.png)
+    ![Create external table](../module07/screen02.png)
 
-3. Run the code and wait for a couple of minutes. The script creates more than 1.3 billion rows of data with randomized data.
+    The script is similar to the script you've used for your Serverless Pool. You can test your external table by running the following SQL Statement: `SELECT * FROM ExternalCustomerAddresses;`
 
-## 3. Transfer data to Kusto
+3. Next you should create another script. This time for your target table. The table will be used within the dedicated pool using a HASH distribution method. This means your data will be distributed over 60 nodes using the CustomerId column.
 
-4. If everything works as expected, go back to your Data Explorer Pool and lookup the connection details. Copy the Query endpoint to a clipboard.
-
-    ![Data Explorer Pool](../module07/screen02.png)
-
-5. Head back to your Notebook. Add two new code blocks. The first codeblock stores all data into a external table. The second code block writes all data to your newly created Kusto Pool. You need to adjust the **spark.synapse.linkedService** and **kustoCluster** options. The linkedService is the name of your pool. The kustoCluster is the query endpoint from your clipboard.
-
-    ```python
-    %%pyspark
-    spark.sql("CREATE DATABASE IF NOT EXISTS random")
-    vardata.write.mode("overwrite").saveAsTable("random.vardata")
+    ```sql
+    CREATE TABLE [dbo].[CustomerAddresses] (
+        [CustomerId]        INT             NOT NULL,
+        [Title]             VARCHAR (50)    NULL,
+        [FirstName]         VARCHAR (1024)    NULL,
+        [MiddleName]        VARCHAR (1024)    NULL,
+        [LastName]          VARCHAR (1024)    NULL,
+        [Suffix]            VARCHAR (30)    NULL,
+        [AddressType]       VARCHAR (1024)    NULL,
+        [AddressLine1]      VARCHAR (1024)    NULL,
+        [AddressLine2]      VARCHAR (1024)    NULL,
+        [City]              VARCHAR (1024)    NULL,
+        [StateProvince]     VARCHAR (1024)    NULL,
+        [CountryRegion]     VARCHAR (1024)    NULL,
+        [PostalCode]        VARCHAR (50)    NULL
+    )
+    WITH (CLUSTERED COLUMNSTORE INDEX, DISTRIBUTION = HASH([CustomerId]));
     ```
 
-    ```python
-    vardata.write \
-        .format("com.microsoft.kusto.spark.synapse.datasource") \
-        .option("spark.synapse.linkedService", "kustopool001") \
-        .option("kustoCluster", "https://kustopool001.synapsedeltademo.kusto.azuresynapse.net") \
-        .option("kustoDatabase", "imkustodb") \
-        .option("kustoTable", "vardata") \
-        .option("tableCreateOptions","CreateIfNotExist") \
-        .mode("Append") \
-        .save()
+    ![Create table](../module07/screen03.png)
+
+4. Next you can transfer data from your external table into your newly created table within the dedicated pool. Run the following code to select all data from your external table and insert it into your table within the dedicated pool.
+
+    ```sql
+    -- This will be the select into part
+    INSERT INTO CustomerAddresses
+    SELECT
+        *
+    FROM ExternalCustomerAddresses
     ```
 
-6. Next you need to create a new Data Explorer database. Go to the data section, click on the + symbol, choose Create new Data Explorer Database. The new database name should match the **kustoDatabase** option in the script, which in your case is: `imkustodb`.
+    You can query your data using the following statement: `SELECT * FROM CustomerAddresses;`
 
-    ![New Data Explorer database](../module07/screen04.png)
+    ![Transfer data](../module07/screen04.png)
 
-7. When ready, execute the last code blocks of your Python script. This part will take a while. When ready, you should see the newly created **vardata** table under your newly created database.
-
-    ![Vardata](../module07/screen05.png)
-
-## 4. Analyze your data
-
-8. Next, you can open your Data Explorer Database and start writing some Kusto queries to analyze your data. Right click to open your database.
-
-    ![Analyze your data](../module07/screen06.png)
-
-9. Open your database and copy paste the following code from below:
-
-    ```kusto
-    //Example query A: given one date, show all data restricted to that date
-    vardata
-    | where ['date']  == '2021-11-05T00:00:00.0000000'
-
-    //Example query B: given one secid, show all data restricted to that secid
-    vardata
-    | where secid == '5'
-
-    //Example query C: given one date and one varid, show all data restricted to that date and varid
-    vardata
-    | where  ['date'] == '2021-11-05T00:00:00.0000000' and varid == 13
-
-    //Example query D: given one secid and one varid, show all data restricted to that secid and varid
-    vardata
-    | where  secid == '2048' and varid == 85
-
-    //Example query E: same as A, but pivoted. This means that each varid becomes one column and the rows have only secid as key
-    vardata
-    | where ['date'] == '2021-01-05T00:00:00.0000000'
-    | project secid, varid
-    | evaluate pivot(varid)
-
-    //Example query F: same as B, but pivoted. This means that each varid becomes one column and the rows have only date as key
-    vardata
-    | where secid == '2048'
-    | project ['date'],varid
-    | evaluate pivot(varid)
-    ```
-
-8. Execute some of these queries to see how fast Data Explorer is able to process your data. Remember, you're querying more than 1.3 billion rows of data!
-
-    ![Analyze your data](../module07/screen07.png)
-
-9. The same queries you can also execute from your Synapse Studio. Go to Develop, click new KSQL Script, and copy paste the contents from Data Explorer.
-
-    ![Analyze your data](../module07/screen08.png)
-
-<div align="right"><a href="#module-07---analyze-data-using-azure-synapse-data-explorer">↥ back to top</a></div>
+<div align="right"><a href="#module-06---create-and-use-a-dedicated-sql-pool">↥ back to top</a></div>
 
 
 ## :tada: Summary
 
-In this module module you learned how to provision and use a Data Explorer Database. You learned to ingest data from a Spark Notebook. You also learned how to use Kusto queries for analyzing your data. Additional information:
+In this module module you learned how to provision and use a dedicated SQL Pool. You learned to copy data from an external table into a new data in your dedicated pool. Additional information:
 
-- https://docs.microsoft.com/en-us/azure/data-explorer/
-- https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/
+- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute
 
-[Continue >](../module08/module08.md)
+[Continue >](../module07/module07.md)

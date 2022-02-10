@@ -1,235 +1,83 @@
-# Module 05 - Create Stored Procedures, Process to Gold layer (External table)
+# Module 05 - Transforming data using Data Flows
 
 [< Previous Module](../module04/module04.md) - **[Home](../README.md)** - [Next Module >](../module06/module06.md)
 
 ## :dart: Objectives
 
-* The objective for this module is to move data from the silver layer to gold layer using a stored procedure and a Serverless Pool. In this example you will use an external table format, which stored data into Parquet. You will use two stored procedures and add a delete step to the data pipeline.
+* The objective for this module is to transform data using Azure Data Flows. Data Flows is code-free solution for transforming data. It part of Synapse Analytics and can be used to perform common actions like joining, aggregating, pivoting, and sorting. As you build, you see logical dragrams and previews of your data. You use Data Flows within your data pipeline.
 
-## 1. Create External Tables
+## 1. Transforming data using Data Flows
 
-1. Open Synapse Studio, Navigate to Development and create a new script.
+## 1. Open Data Flows
 
-2. Create a new database using the following SQL statement: `CREATE DATABASE customers;`
+1. Open Synapse Studio, Navigate to Development and create a new Data Flow.
 
-3. Switch from master to your newly created database by using the following command: `USE customers;`. Alternatively you can use the dropdown menu on the right. You might need to refresh first before your new database shows up in the list.
+    ![Deploy Azure Purview](../module05/screen01.png)
 
-4. In this step you will combine three datasets and create a new external table, which stored the denormalized and selected data into a new parquet file. We will first validate the results. If everything works as expected, you will wrap these statements into stored procedures and add it to your pipeline. Copy paste the following code to the newly created SQL script. Select all code and press ENTER.
+2. Provide a name for your newly created Data Flow. Click on Add New Source and select Inline as the source type. For the dataset type select **Delta**. For the linked service use the dropdown to select your Synapse Workspace.
 
-    ![Create external table](../module05/screen01.png)  
+    ![New source](../module05/screen02.png)
 
-    ```sql
-    -- Create parquetfile format
-    IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_file_formats WHERE name = 'parquetfile')
-        CREATE EXTERNAL FILE FORMAT parquetfile WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec')
+3. Next you need to navigate to your Silver Layer. Click on the second panel named: Source Options. Navigate to your silver layer, select your demodatabase, and select **SalesLT.Customers**. Press on **OK** to close the panel.
 
-    --Create external AzureDataLakeStore
-    IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore' )
-        CREATE EXTERNAL DATA SOURCE AzureDataLakeStore WITH (LOCATION = 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/') 
+    ![Source Options](../module05/screen03.png)
 
+4. When using Delta you also need to profile the schema. Click on the next panel called: Projection. Press on **Import Schema**, leave the options empty and click on OK. The schema should be listed now.
 
-    --Create external table CustomerAddresses
-    CREATE EXTERNAL TABLE CustomerAddresses
-    WITH   
-        (   
-            LOCATION = '/gold/demodatabase/customeraddresses',  
-            DATA_SOURCE = AzureDataLakeStore,
-            FILE_FORMAT = parquetfile
-        )  
-    AS
-    SELECT
-        customer.CustomerId,
-        Title,
-        Firstname,
-        MiddleName,
-        LastName,
-        Suffix,
-        AddressType,
-        AddressLine1,
-        AddressLine2,
-        City,
-        StateProvince,
-        CountryRegion,
-        PostalCode
-    FROM (SELECT
-        *
-    FROM
-        OPENROWSET(
-            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Customer/',
-            FORMAT = 'DELTA'
-        ) AS [customer] WHERE [current] = 'True') AS customer
-    JOIN 
-    (SELECT
-        *
-    FROM
-        OPENROWSET(
-            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.CustomerAddress/',
-            FORMAT = 'DELTA'
-        ) AS [CustomerAddress] WHERE [current] = 'True') AS CustomerAddress
-    ON (customer.CustomerID = CustomerAddress.CustomerID)
-    JOIN
-    (SELECT
-        *
-    FROM
-        OPENROWSET(
-            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Address/',
-            FORMAT = 'DELTA'
-        ) AS [Address] WHERE [current] = 'True') AS Address
-    ON (CustomerAddress.AddressID = Address.AddressID)
-    ORDER BY customer.CustomerId
-    ```
+    ![Projection](../module05/screen05.png)
 
-5. Head back to your storage account. Go to the gold layer, select your demo database. There should be customeraddresses folder holding parquet files with your data.
+5. Next, you can preview your data. First you need to toggle the Data flow debug setting. Wait a couple of minutes till the debug environment is provisioned. Open the panel: **Data preview**, press refresh and wait for the data to appear.
 
-    ![Validate external table](../module05/screen02.png)
+    ![Source Options](../module05/screen04.png)
 
-4. Head back to Synapse Studio. Open the data section, refresh your external tables item under your database. The customeraddresses table should be listed there. Right click and select top 100. Execute and validate everything works as expected.
+6. For the next step you need to filter your data by selecting only the current rows. Add a new step and select Filter. For the **filter on** option, type in **current**. The current column is a boolean, which refers to true or false. You can use the **Data Preview** panel again to validate the output.
 
-    ![Select top 100](../module05/screen03.png) 
+    ![Filter](../module05/screen07.png)
 
-5. Next you will drop the external table. Remove the SELECT statement and type the following: `DROP EXTERNAL TABLE CustomerAddresses;`. Refresh the external table items. Your external table should be removed.
+7. The next step is adding a join. For this you need to add another data source. Repeat the previous steps by adding your **SalesLT.CustomerAddress** dataset. Go back to your **SalesLT.Customers** and add the Join step. Select your filtered dataset as the left stream and CustomerAddres as the right stream. Select **Inner** as the join type. Finally, select CustomerID as the keys for joining the two tables. You can use the **Data Preview** panel again to validate the output.
 
-    ![Drop external table](../module05/screen04.png)
+    ![Join](../module05/screen08.png)
 
-6. The parquet files on your storate account will still exist. Therefore we need to modify the data pipeline to ensure also the directory and parquet files will be deleted. Drag and drop the delete action from the General section. Select your storage account and navigate to your gold layer, select your demodatabase. Under Source, select **File path in dataset**. Also ensure **Recursive** is selected.
+8. You need to repeat the steps again for another dataset. Add another source.Repeat the previous steps by adding your **SalesLT.Address** dataset. For this dataset you also need to add a filter.
 
-    ![Create delete step](../module05/screen05.png)
+    ![Address](../module05/screen10.png)
 
-    ![Configure file path](../module05/screen06.png)
+9. Now we will add another join. Go back to your **SalesLT.Customers** and add one more Join step. Select your previous joined dataset as the left stream. Select the newly added filtered dataset. Select **Inner** as the join type. Finally, select AddressID as the keys for joining the two tables. You can use the **Data Preview** panel again to validate the output.
+
+    ![Join](../module05/screen11.png)
+
+10. Now we added all data together we need to get rid of the dupplicate column names. Add another step: Select. Remove all the dupplicate keys, such as CustomerID, AddressID, current, rowguid, effectiveDate, endDate, and so on.
+
+    ![Select](../module05/screen12.png)
+
+11. At this stage we can add a Sink. This is the location to where result data is written. Select your **workspace DB** as Sink type. Select your database, in this case default, and provide a new name for your result table. Important is to publish your results using the **Publish all** button.
+
+    ![Sink](../module05/screen13.png)
+
+## 2. Create new pipeline
+
+12. Now we need to create a pipeline. Go to your pipeline section, create a new pipeline. Select **Data Flow** from the Synapse Activities. Go to Settings and select your newly created Data flow. Remember to publish everything again using the **Publish all** button.
+
+    ![Pipeline](../module05/screen14.png)
+
+## 3. Explorer your results
+
+13. Finally, it is time to trigger your pipeline. When everything is running correctly you can go to your Monitor overview and view the pipeline details.
+
+    ![Sink](../module05/screen15.png)
+
+14. At last, you can go to your data overview to query your newly created dataset. Select your default database from the list, right click your newly created table, and select top 100.
+
+    ![Sink](../module05/screen16.png)
 
 
-7. Trigger the pipeline. Ensure the customeraddresses folder within your gold layer is correctly deleted.
-
-## 2. Create Stored Procedures
-
-8. Head back to the develop selection. We will create two stored procedures. A stored procedure is prepared set of SQL code that you can save within the database. This allows you to reuse the code over and over again. For the createCustomerAddresses use the following code block. Copy paste it in and hit execute:
-
-    ```sql
-    CREATE PROC createCustomerAddresses
-    AS
-    BEGIN
-        BEGIN TRY
-            -- Create parquetfile format
-            IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_file_formats WHERE name = 'parquetfile')
-                CREATE EXTERNAL FILE FORMAT parquetfile WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec')
-
-            --Create external AzureDataLakeStore
-            IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore' )
-                CREATE EXTERNAL DATA SOURCE AzureDataLakeStore WITH (LOCATION = 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/') 
-
-            --Create external table CustomerAddresses
-            CREATE EXTERNAL TABLE CustomerAddresses
-            WITH   
-                (   
-                    LOCATION = '/gold/demodatabase/customeraddresses',  
-                    DATA_SOURCE = AzureDataLakeStore,
-                    FILE_FORMAT = parquetfile
-                )  
-            AS
-            SELECT
-                customer.CustomerId,
-                Title,
-                Firstname,
-                MiddleName,
-                LastName,
-                Suffix,
-                AddressType,
-                AddressLine1,
-                AddressLine2,
-                City,
-                StateProvince,
-                CountryRegion,
-                PostalCode
-            FROM (SELECT
-                *
-            FROM
-                OPENROWSET(
-                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Customer/',
-                    FORMAT = 'DELTA'
-                ) AS [customer] WHERE [current] = 'True') AS customer
-            JOIN 
-            (SELECT
-                *
-            FROM
-                OPENROWSET(
-                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.CustomerAddress/',
-                    FORMAT = 'DELTA'
-                ) AS [CustomerAddress] WHERE [current] = 'True') AS CustomerAddress
-            ON (customer.CustomerID = CustomerAddress.CustomerID)
-            JOIN
-            (SELECT
-                *
-            FROM
-                OPENROWSET(
-                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Address/',
-                    FORMAT = 'DELTA'
-                ) AS [Address] WHERE [current] = 'True') AS Address
-            ON (CustomerAddress.AddressID = Address.AddressID)
-            ORDER BY customer.CustomerId
-        END TRY
-        BEGIN CATCH
-            PRINT 'Error creating External table'
-        END CATCH
-    END
-    GO
-    ```
-
-9. For the dropCustomerAddresses use the following code block. Copy paste it in and hit execute:
-
-    ```sql
-    CREATE PROC dropCustomerAddresses
-    AS
-    BEGIN
-        BEGIN TRY
-            IF EXISTS (SELECT * FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.CustomerAddresses'))
-                DROP EXTERNAL TABLE dbo.CustomerAddresses
-        END TRY
-        BEGIN CATCH
-            PRINT 'Error dropping External table'
-        END CATCH
-    END
-    GO
-    ```
-
-10. You can now test your stored procedures by running: `EXEC createCustomerAddresses;`. Check and validate that the external table is created again. Also validate that the folder is created within your storage account. For deleting your external table you can use: `EXEC dropCustomerAddresses;`. Validate that your external table is indeed removed. You also need to remove your customeraddresses folder within your gold layer. You can do this by hand or by triggering your pipeline.
-
-    ![dropCustomerAddresses](../module05/screen07.png)
-
-## 3. Update data pipeline
-
-11. Next you will automate your stored procedures by adding these to your data pipeline. For making a connection to your SQL Serverless Pool you need to use the fully qualified domain name. Go to settings, find your serverless pool and copy paste your domain name to a clipboard:
-
-    ![Find Serverless pool name](../module05/screen08.png)
-
-12. Go back to your data pipeline. Drag and drop in **Stored Procedure** from the **General** section. In Activity Settings tab, click New to create new Linked service – here we will create connection to serverless SQL pool. In New linked service panel:
-
-    a. Fill in Name with serverlessSQLpool
-    b. Change Type to Azure Synapse Analytics (formerly SQL DW)
-    c. For Account selection method choose Enter manually
-    d. Fill in Fully qualified domain name with your serverless SQL pool endpoint
-    e. Fill in Database with the name of the database in which you created the stored procedure population_by_year_state previously
-    f. For Authentication type choose Managed Identity
-    g. Click Test Connection to make sure configuration is correct
-    h. Click Create to serverlessSQLpool linked service with specified options
-
-    ![Configure linked service](../module05/screen09.png)
-
-13. After adding your linked service to the Serverless Pool, go back to your stored procedure step. Under Settings, select your serverless pool and the dropCustomerAddresses stored procedure. Connect your CopyTables step to this newly created stored procedure step. Connect your newly created stored procedure step to the Delete step. Create a new stored procedure step for the createCustomerAddresses stored procedure. Ensure your pipeline looks like the image below:
-
-    ![Configure linked service](../module05/screen10.png)
-
-14. Trigger your pipeline. From this point you connected all data lake layers. First, raw data is pulled into the bronze layer. Second, it is moved into silver in which you use a standardized file format: Delta. Also the data is versioned, so you can time-travel and fall back. Finally, you selected only 'current' data from Silver, integrated and selected it, and moved your results into the gold layer.
-
-    ![Configure linked service](../module05/screen11.png)
-
-<div align="right"><a href="#module-05---create-stored-procedures-process-to-gold-layer-external-table">↥ back to top</a></div>
-
+<div align="right"><a href="#module-05---transforming-data-using-data-flows">↥ back to top</a></div>
 
 ## :tada: Summary
 
-In this module module you used Stored Procedures and a Serverless Pool to enrich your data. The Stored Procedures you've added to your data pipeline for managing the process end-to-end. Additional information:
+In this module module you learned how to use Data Flows. More info:
 
-- https://docs.microsoft.com/en-us/learn/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/4-pool-stored-procedures-synapse-pipelines
-- https://docs.microsoft.com/en-us/sql/t-sql/statements/create-procedure-transact-sql?view=sql-server-ver15
+- https://docs.microsoft.com/en-us/azure/data-factory/concepts-data-flow-overview
+- https://azure.microsoft.com/nl-nl/blog/azure-data-factory-mapping-data-flows-are-now-generally-available/
 
 [Continue >](../module06/module06.md)

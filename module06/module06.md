@@ -1,112 +1,235 @@
-# Module 06 - Create and use a Dedicated SQL Pool
+# Module 06 - Create Stored Procedures, Process to Gold layer (External table)
 
 [< Previous Module](../module05/module05.md) - **[Home](../README.md)** - [Next Module >](../module07/module07.md)
 
 ## :dart: Objectives
 
-* The objective for this module is to move data from the gold layer to a dedicated SQL pool.
+* The objective for this module is to move data from the silver layer to gold layer using a stored procedure and a Serverless Pool. In this example you will use an external table format, which stored data into Parquet. You will use two stored procedures and add a delete step to the data pipeline.
 
-## 1. Deploy Dedicated Pool
+## 1. Create External Tables
 
-1. Open Synapse Studio, Navigate to Manage, SQL pools. Create a new dedicated pool.
+1. Open Synapse Studio, Navigate to Development and create a new script.
 
-    ![Create dedicated pool](../module06/screen01.png)
+2. Create a new database using the following SQL statement: `CREATE DATABASE customers;`
 
-2. Navigate to Development and create a new script. Select your newly created dedicated pool, and copy paste the following code:
+3. Switch from master to your newly created database by using the following command: `USE customers;`. Alternatively you can use the dropdown menu on the right. You might need to refresh first before your new database shows up in the list.
 
-    ```sql
-    --Script for Dedicated Pool
-    USE dedicated01;
+4. In this step you will combine three datasets and create a new external table, which stored the denormalized and selected data into a new parquet file. We will first validate the results. If everything works as expected, you will wrap these statements into stored procedures and add it to your pipeline. Copy paste the following code to the newly created SQL script. Select all code and press ENTER.
 
-    --Attach external table, which we created on the Serverless pool
-    IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'parquetfile') 
-        CREATE EXTERNAL FILE FORMAT [parquetfile] 
-        WITH ( FORMAT_TYPE = PARQUET)
-    GO
-
-    IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore') 
-        CREATE EXTERNAL DATA SOURCE [AzureDataLakeStore] 
-        WITH (
-            LOCATION = 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net', 
-            TYPE = HADOOP 
-        )
-    GO
-
-    IF EXISTS (SELECT * FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.ExternalCustomerAddresses'))
-        DROP EXTERNAL TABLE ExternalCustomerAddresses
-    GO
-
-    CREATE EXTERNAL TABLE ExternalCustomerAddresses (
-        [CustomerId]        INT             NOT NULL,
-        [Title]             VARCHAR (50)    NULL,
-        [FirstName]         VARCHAR (1024)    NULL,
-        [MiddleName]        VARCHAR (1024)    NULL,
-        [LastName]          VARCHAR (1024)    NULL,
-        [Suffix]            VARCHAR (30)    NULL,
-        [AddressType]       VARCHAR (1024)    NULL,
-        [AddressLine1]      VARCHAR (1024)    NULL,
-        [AddressLine2]      VARCHAR (1024)    NULL,
-        [City]              VARCHAR (1024)    NULL,
-        [StateProvince]     VARCHAR (1024)    NULL,
-        [CountryRegion]     VARCHAR (1024)    NULL,
-        [PostalCode]        VARCHAR (50)    NULL
-        )
-        WITH (
-        LOCATION = 'gold/demodatabase/customeraddresses',
-        DATA_SOURCE = [AzureDataLakeStore],
-        FILE_FORMAT = [parquetfile]
-        )
-    GO
-    ```
-
-    ![Create external table](../module06/screen02.png)
-
-    The script is similar to the script you've used for your Serverless Pool. You can test your external table by running the following SQL Statement: `SELECT * FROM ExternalCustomerAddresses;`
-
-3. Next you should create another script. This time for your target table. The table will be used within the dedicated pool using a HASH distribution method. This means your data will be distributed over 60 nodes using the CustomerId column.
+    ![Create external table](../module06/screen01.png)  
 
     ```sql
-    CREATE TABLE [dbo].[CustomerAddresses] (
-        [CustomerId]        INT             NOT NULL,
-        [Title]             VARCHAR (50)    NULL,
-        [FirstName]         VARCHAR (1024)    NULL,
-        [MiddleName]        VARCHAR (1024)    NULL,
-        [LastName]          VARCHAR (1024)    NULL,
-        [Suffix]            VARCHAR (30)    NULL,
-        [AddressType]       VARCHAR (1024)    NULL,
-        [AddressLine1]      VARCHAR (1024)    NULL,
-        [AddressLine2]      VARCHAR (1024)    NULL,
-        [City]              VARCHAR (1024)    NULL,
-        [StateProvince]     VARCHAR (1024)    NULL,
-        [CountryRegion]     VARCHAR (1024)    NULL,
-        [PostalCode]        VARCHAR (50)    NULL
-    )
-    WITH (CLUSTERED COLUMNSTORE INDEX, DISTRIBUTION = HASH([CustomerId]));
-    ```
+    -- Create parquetfile format
+    IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_file_formats WHERE name = 'parquetfile')
+        CREATE EXTERNAL FILE FORMAT parquetfile WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec')
 
-    ![Create table](../module06/screen03.png)
+    --Create external AzureDataLakeStore
+    IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore' )
+        CREATE EXTERNAL DATA SOURCE AzureDataLakeStore WITH (LOCATION = 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/') 
 
-4. Next you can transfer data from your external table into your newly created table within the dedicated pool. Run the following code to select all data from your external table and insert it into your table within the dedicated pool.
 
-    ```sql
-    -- This will be the select into part
-    INSERT INTO CustomerAddresses
+    --Create external table CustomerAddresses
+    CREATE EXTERNAL TABLE CustomerAddresses
+    WITH   
+        (   
+            LOCATION = '/gold/demodatabase/customeraddresses',  
+            DATA_SOURCE = AzureDataLakeStore,
+            FILE_FORMAT = parquetfile
+        )  
+    AS
     SELECT
+        customer.CustomerId,
+        Title,
+        Firstname,
+        MiddleName,
+        LastName,
+        Suffix,
+        AddressType,
+        AddressLine1,
+        AddressLine2,
+        City,
+        StateProvince,
+        CountryRegion,
+        PostalCode
+    FROM (SELECT
         *
-    FROM ExternalCustomerAddresses
+    FROM
+        OPENROWSET(
+            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Customer/',
+            FORMAT = 'DELTA'
+        ) AS [customer] WHERE [current] = 'True') AS customer
+    JOIN 
+    (SELECT
+        *
+    FROM
+        OPENROWSET(
+            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.CustomerAddress/',
+            FORMAT = 'DELTA'
+        ) AS [CustomerAddress] WHERE [current] = 'True') AS CustomerAddress
+    ON (customer.CustomerID = CustomerAddress.CustomerID)
+    JOIN
+    (SELECT
+        *
+    FROM
+        OPENROWSET(
+            BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Address/',
+            FORMAT = 'DELTA'
+        ) AS [Address] WHERE [current] = 'True') AS Address
+    ON (CustomerAddress.AddressID = Address.AddressID)
+    ORDER BY customer.CustomerId
     ```
 
-    You can query your data using the following statement: `SELECT * FROM CustomerAddresses;`
+5. Head back to your storage account. Go to the gold layer, select your demo database. There should be customeraddresses folder holding parquet files with your data.
 
-    ![Transfer data](../module06/screen04.png)
+    ![Validate external table](../module06/screen02.png)
 
-<div align="right"><a href="#module-06---create-and-use-a-dedicated-sql-pool">↥ back to top</a></div>
+4. Head back to Synapse Studio. Open the data section, refresh your external tables item under your database. The customeraddresses table should be listed there. Right click and select top 100. Execute and validate everything works as expected.
+
+    ![Select top 100](../module06/screen03.png) 
+
+5. Next you will drop the external table. Remove the SELECT statement and type the following: `DROP EXTERNAL TABLE CustomerAddresses;`. Refresh the external table items. Your external table should be removed.
+
+    ![Drop external table](../module06/screen04.png)
+
+6. The parquet files on your storate account will still exist. Therefore we need to modify the data pipeline to ensure also the directory and parquet files will be deleted. Drag and drop the delete action from the General section. Select your storage account and navigate to your gold layer, select your demodatabase. Under Source, select **File path in dataset**. Also ensure **Recursive** is selected.
+
+    ![Create delete step](../module06/screen05.png)
+
+    ![Configure file path](../module06/screen06.png)
+
+
+7. Trigger the pipeline. Ensure the customeraddresses folder within your gold layer is correctly deleted.
+
+## 2. Create Stored Procedures
+
+8. Head back to the develop selection. We will create two stored procedures. A stored procedure is prepared set of SQL code that you can save within the database. This allows you to reuse the code over and over again. For the createCustomerAddresses use the following code block. Copy paste it in and hit execute:
+
+    ```sql
+    CREATE PROC createCustomerAddresses
+    AS
+    BEGIN
+        BEGIN TRY
+            -- Create parquetfile format
+            IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_file_formats WHERE name = 'parquetfile')
+                CREATE EXTERNAL FILE FORMAT parquetfile WITH (FORMAT_TYPE = PARQUET, DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec')
+
+            --Create external AzureDataLakeStore
+            IF NOT EXISTS (SELECT COUNT(*) FROM sys.external_data_sources WHERE name = 'AzureDataLakeStore' )
+                CREATE EXTERNAL DATA SOURCE AzureDataLakeStore WITH (LOCATION = 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/') 
+
+            --Create external table CustomerAddresses
+            CREATE EXTERNAL TABLE CustomerAddresses
+            WITH   
+                (   
+                    LOCATION = '/gold/demodatabase/customeraddresses',  
+                    DATA_SOURCE = AzureDataLakeStore,
+                    FILE_FORMAT = parquetfile
+                )  
+            AS
+            SELECT
+                customer.CustomerId,
+                Title,
+                Firstname,
+                MiddleName,
+                LastName,
+                Suffix,
+                AddressType,
+                AddressLine1,
+                AddressLine2,
+                City,
+                StateProvince,
+                CountryRegion,
+                PostalCode
+            FROM (SELECT
+                *
+            FROM
+                OPENROWSET(
+                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Customer/',
+                    FORMAT = 'DELTA'
+                ) AS [customer] WHERE [current] = 'True') AS customer
+            JOIN 
+            (SELECT
+                *
+            FROM
+                OPENROWSET(
+                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.CustomerAddress/',
+                    FORMAT = 'DELTA'
+                ) AS [CustomerAddress] WHERE [current] = 'True') AS CustomerAddress
+            ON (customer.CustomerID = CustomerAddress.CustomerID)
+            JOIN
+            (SELECT
+                *
+            FROM
+                OPENROWSET(
+                    BULK 'https://synapsedeltademo.dfs.core.windows.net/synapsedeltademo/silver/demodatabase/SalesLT.Address/',
+                    FORMAT = 'DELTA'
+                ) AS [Address] WHERE [current] = 'True') AS Address
+            ON (CustomerAddress.AddressID = Address.AddressID)
+            ORDER BY customer.CustomerId
+        END TRY
+        BEGIN CATCH
+            PRINT 'Error creating External table'
+        END CATCH
+    END
+    GO
+    ```
+
+9. For the dropCustomerAddresses use the following code block. Copy paste it in and hit execute:
+
+    ```sql
+    CREATE PROC dropCustomerAddresses
+    AS
+    BEGIN
+        BEGIN TRY
+            IF EXISTS (SELECT * FROM sys.external_tables WHERE object_id = OBJECT_ID('dbo.CustomerAddresses'))
+                DROP EXTERNAL TABLE dbo.CustomerAddresses
+        END TRY
+        BEGIN CATCH
+            PRINT 'Error dropping External table'
+        END CATCH
+    END
+    GO
+    ```
+
+10. You can now test your stored procedures by running: `EXEC createCustomerAddresses;`. Check and validate that the external table is created again. Also validate that the folder is created within your storage account. For deleting your external table you can use: `EXEC dropCustomerAddresses;`. Validate that your external table is indeed removed. You also need to remove your customeraddresses folder within your gold layer. You can do this by hand or by triggering your pipeline.
+
+    ![dropCustomerAddresses](../module06/screen07.png)
+
+## 3. Update data pipeline
+
+11. Next you will automate your stored procedures by adding these to your data pipeline. For making a connection to your SQL Serverless Pool you need to use the fully qualified domain name. Go to settings, find your serverless pool and copy paste your domain name to a clipboard:
+
+    ![Find Serverless pool name](../module06/screen08.png)
+
+12. Go back to your data pipeline. Drag and drop in **Stored Procedure** from the **General** section. In Activity Settings tab, click New to create new Linked service – here we will create connection to serverless SQL pool. In New linked service panel:
+
+    a. Fill in Name with serverlessSQLpool
+    b. Change Type to Azure Synapse Analytics (formerly SQL DW)
+    c. For Account selection method choose Enter manually
+    d. Fill in Fully qualified domain name with your serverless SQL pool endpoint
+    e. Fill in Database with the name of the database in which you created the stored procedure population_by_year_state previously
+    f. For Authentication type choose Managed Identity
+    g. Click Test Connection to make sure configuration is correct
+    h. Click Create to serverlessSQLpool linked service with specified options
+
+    ![Configure linked service](../module06/screen09.png)
+
+13. After adding your linked service to the Serverless Pool, go back to your stored procedure step. Under Settings, select your serverless pool and the dropCustomerAddresses stored procedure. Connect your CopyTables step to this newly created stored procedure step. Connect your newly created stored procedure step to the Delete step. Create a new stored procedure step for the createCustomerAddresses stored procedure. Ensure your pipeline looks like the image below:
+
+    ![Configure linked service](../module06/screen10.png)
+
+14. Trigger your pipeline. From this point you connected all data lake layers. First, raw data is pulled into the bronze layer. Second, it is moved into silver in which you use a standardized file format: Delta. Also the data is versioned, so you can time-travel and fall back. Finally, you selected only 'current' data from Silver, integrated and selected it, and moved your results into the gold layer.
+
+    ![Configure linked service](../module06/screen11.png)
+
+<div align="right"><a href="#module-06---create-stored-procedures-process-to-gold-layer-external-table">↥ back to top</a></div>
 
 
 ## :tada: Summary
 
-In this module module you learned how to provision and use a dedicated SQL Pool. You learned to copy data from an external table into a new data in your dedicated pool. Additional information:
+In this module module you used Stored Procedures and a Serverless Pool to enrich your data. The Stored Procedures you've added to your data pipeline for managing the process end-to-end. Additional information:
 
-- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute
+- https://docs.microsoft.com/en-us/learn/modules/use-azure-synapse-serverless-sql-pools-for-transforming-data-lake/4-pool-stored-procedures-synapse-pipelines
+- https://docs.microsoft.com/en-us/sql/t-sql/statements/create-procedure-transact-sql?view=sql-server-ver15
 
 [Continue >](../module07/module07.md)

@@ -15,8 +15,10 @@ Azure Synapse Analytics is a limitless analytics service that brings together da
 2. [Deploy Azure SQL using AdventureWorks Sample database](./module02/module02.md)
 3. [Setup Data Lake, Ingest data to Bronze layer (Parquet)](./module03/module03.md)
 4. [Create Spark Script, Process to Silver layer (Delta)](./module04/module04.md)
-5. [Create Stored Procedures, Process to Gold layer (External table)](./module05/module05.md)
-6. [Create and use a Dedicated SQL Pool](./module06/module06.md)
-7. [Analyze data using Azure Synapse Data Explorer](./module07/module07.md)
+5. [Transforming data using Data Flows](./module05/module05.md)
+6. [Create Stored Procedures, Process to Gold layer (External table)](./module06/module06.md)
+7. [Create and use a Dedicated SQL Pool](./module07/module07.md)
+8. [Analyze data using Azure Synapse Data Explorer](./module08/module08.md)
+9. [Data governance with Azure Purview](./module09/module09.md)
 
 <div align="right"><a href="#azure-synapse-workshop">↥ back to top</a></div>

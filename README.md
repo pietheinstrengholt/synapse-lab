@@ -12,7 +12,7 @@ Azure Synapse Analytics is a limitless analytics service that brings together da
 ## :books: Learning Modules
 
 1. [Create an Azure Synapse Workspace](./module01/module01.md)
-2. [Deploy Azure SQL](./module02/module02.md)
+2. [Deploy Azure SQL using AdventureWorks Sample database](./module02/module02.md)
 3. [Setup Data Lake, Ingest data to Bronze layer (Parquet)](./module03/module03.md)
 4. [Create Spark Script, Process to Silver layer (Delta)](./module04/module04.md)
 5. [Create Stored Procedures, Process to Gold layer (External table)](./module05/module05.md)

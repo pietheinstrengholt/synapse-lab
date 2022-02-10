@@ -1,6 +1,6 @@
 # Module 07 - Create and use a Dedicated SQL Pool
 
-[< Previous Module](../module05/module05.md) - **[Home](../README.md)** - [Next Module >](../module07/module07.md)
+[< Previous Module](../module06/module06.md) - **[Home](../README.md)** - [Next Module >](../module08/module08.md)
 
 ## :dart: Objectives
 
@@ -100,7 +100,7 @@
 
     ![Transfer data](../module07/screen04.png)
 
-<div align="right"><a href="#module-06---create-and-use-a-dedicated-sql-pool">↥ back to top</a></div>
+<div align="right"><a href="#module-07---create-and-use-a-dedicated-sql-pool">↥ back to top</a></div>
 
 
 ## :tada: Summary
@@ -109,4 +109,4 @@ In this module module you learned how to provision and use a dedicated SQL Pool.
 
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute
 
-[Continue >](../module07/module07.md)
+[Continue >](../module08/module08.md)

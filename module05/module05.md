@@ -4,7 +4,7 @@
 
 ## :dart: Objectives
 
-* The objective for this module is to transform data using Azure Data Flows. Data Flows is code-free solution for transforming data. It part of Synapse Analytics and can be used to perform common actions like joining, aggregating, pivoting, and sorting. As you build, you see logical dragrams and previews of your data. You use Data Flows within your data pipeline.
+* The objective for this module is to transform data using Azure Data Flows. Data Flows is code-free solution for transforming data. It part of Synapse Analytics and can be used to perform common actions like joining, aggregating, pivoting, and sorting. As you build, you see logical dragrams and previews of your data. You use Data Flows within your data pipeline. Data flows also support parameters. This means you can design or build a reusable transformation step and reuse this across many different pipelines. The objective of this module is to show how to transform data by filtering, joining and selecting different datasets.
 
 ## 1. Transforming data using Data Flows
 
@@ -75,7 +75,7 @@
 
 ## :tada: Summary
 
-In this module module you learned how to use Data Flows. More info:
+In this module, you learned how to use a Pipeline that implements Code-free logic to do to extract, transform, and load data into an Azure Synapse Analytics table. More info:
 
 - https://docs.microsoft.com/en-us/azure/data-factory/concepts-data-flow-overview
 - https://azure.microsoft.com/nl-nl/blog/azure-data-factory-mapping-data-flows-are-now-generally-available/

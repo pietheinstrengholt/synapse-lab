@@ -4,7 +4,9 @@
 
 ## :loudspeaker: Introduction
 
-The objective for this module is to configure your data lake structure. One of the key value proposition of a data lake is to serve data to many different data consumers from a single location. A typically pitfall of a data lake is just dumping everything into the data lake without any structure and then exposing it all consumers. The drawback of this is approach is tight-coupling and complexity: all consumers need to rework changes and transform technical structures to better consumable data. The solution for this problem is to layer your data lake by separating one-on-one copies (Bronze), technically standardized data (Silver) and well-constructed data (Gold). In this module we will use the same layering to demonstrate how you could design your lake. After setting up the structure, you will onboard your first source system into the Bronze layer. This is the Sample database you created in the previous module. You will use Parquet (Column Store) as the file format and Synapse Pipelines for orchestration. During this lab you will make a dynamic pipeline which first retrieves a list of tables from the databases. Next it will iterate, extract and copy table after table to your Storage Account.
+The objective for this module is to configure your data lake structure. One of the key value proposition of a data lake is to serve data to many different data consumers from a single location. A typically pitfall of a data lake is just dumping everything into the data lake without any structure and then exposing it all consumers. The drawback of this is approach is tight-coupling and complexity: all consumers need to rework changes and transform technical structures to better consumable data. The solution for this problem is to layer your data lake by separating, for example, one-on-one copies (Bronze), technically standardized data (Silver) and well-constructed data (Gold).
+
+In this module we will use the same layering to demonstrate how you could design your lake. After setting up the structure, you will onboard your first source system into the Bronze layer. This is the Sample database you created in the previous module. You will use Parquet (Column Store) as the file format and Synapse Pipelines for orchestration. During this lab you will make a dynamic pipeline which first retrieves a list of tables from the databases. Next it will iterate, extract and copy table after table to your Storage Account.
 
 ## :dart: Objectives
 
@@ -106,5 +108,6 @@ The objective for this module is to configure your data lake structure. One of t
 In this module you learned about configuring your data lake structure and setting up your first data pipeline. You learned how to extract your sample database and store data as raw data in your bronze layer. More information:
 
 - https://github.com/rukmani-msft/adlsguidancedoc/blob/master/Hitchhikers_Guide_to_the_Datalake.md
+- https://techcommunity.microsoft.com/t5/azure-synapse-analytics-blog/the-best-practices-for-organizing-synapse-workspaces-and/ba-p/3002506
 
 [Continue >](../module04/module04.md)

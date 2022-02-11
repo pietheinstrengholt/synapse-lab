@@ -1,4 +1,4 @@
-# Azure Synapse Workshop
+# Azure Synapse Workshop Lab
 
 ## What is Azure Synapse?
 

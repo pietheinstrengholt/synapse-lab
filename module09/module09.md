@@ -2,9 +2,16 @@
 
 [< Previous Module](../module08/module08.md) - **[Home](../README.md)** - [Next Module >](../module10/module10.md)
 
+## :loudspeaker: Introduction
+
+The objective for this module is to govern and scan your data using Azure Purview, which is a unified data governance solution that helps you manage and govern your on-premises, multi-cloud, and software-as-a-service (SaaS) data. Purview enables you to easily create a holistic, up-to-date map of your data landscape with automated data discovery, sensitive data classification, and end-to-end data lineage. It also enables data consumers to find valuable, trustworthy data.
+
 ## :dart: Objectives
 
-* The objective for this module is to govern and scan your data using Azure Purview, which is a unified data governance solution that helps you manage and govern your on-premises, multicloud, and software-as-a-service (SaaS) data. Purview enables you to easily create a holistic, up-to-date map of your data landscape with automated data discovery, sensitive data classification, and end-to-end data lineage. It also enables data consumers to find valuable, trustworthy data.
+* Deploy Azure Purview
+* Link Azure Synapse Analytics to Purview
+* Scan Synapse data assets
+* Perform an Azure Purview powered search in Synapse
 
 ## 1. Deploy Azure Purview
 

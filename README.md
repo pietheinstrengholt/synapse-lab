@@ -4,6 +4,10 @@
 
 Azure Synapse Analytics is a limitless analytics service that brings together data integration, enterprise data warehousing, and big data analytics. It gives you the freedom to query data on your terms, using either serverless or dedicated resources—at scale. Azure Synapse brings these worlds together with a unified experience to ingest, explore, prepare, transform, manage, and serve data for immediate BI and machine learning needs.
 
+## Hands-on lab
+
+In this hands-on lab, you will look at the process of creating an end-to-end solution using Azure Synapse Analytics. The lab learning modules will cover various aspects of data management and data engineering, such as data extraction, data transformation, and data loading, along with performing data governance. At the end of this lab, you will be better able to design and build a complete end-to-end advanced analytics solution using Azure Synapse Analytics.
+
 ## :thinking: Prerequisites
 
 * An [Azure account](https://azure.microsoft.com/en-us/free/) with an active subscription. Note: If you don't have access to an Azure subscription, you may be able to start with a [free account](https://www.azure.com/free).

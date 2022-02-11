@@ -2,9 +2,16 @@
 
 [< Previous Module](../module07/module07.md) - **[Home](../README.md)** - [Next Module >](../module09/module09.md)
 
+## :loudspeaker: Introduction
+
+The objective for this lab module is to analyze data using Azure Synapse Data Explorer, which provides customers with an interactive query experience to unlock insights from log and telemetry data. To complement existing SQL and Apache Spark analytics runtime engines, the Data Explorer analytics runtime is optimized for efficient log analytics using powerful indexing technology to automatically index free-text and semi-structured data commonly found in telemetry data.In this exercise we will use Spark to generate over 1.3 billion rows of data with randomized data. This data you'll push into Azure Data Explorer for later analysis.
+
 ## :dart: Objectives
 
-* The objective for this module is to analyze data using Azure Synapse Data Explorer, which provides customers with an interactive query experience to unlock insights from log and telemetry data. To complement existing SQL and Apache Spark analytics runtime engines, the Data Explorer analytics runtime is optimized for efficient log analytics using powerful indexing technology to automatically index free-text and semi-structured data commonly found in telemetry data.In this exercise we will use Spark to generate over 1.3 billion rows of data with randomized data. This data you'll push into Azure Data Explorer for later analysis.
+* Deploy Azure Synapse Data Explorer
+* Generate random data using a Spark Pool
+* Transfer data from a Spark Pool to a Kusto Pool
+* Use the Kusto language to analyze data
 
 ## 1. Deploy Kusto Pool
 

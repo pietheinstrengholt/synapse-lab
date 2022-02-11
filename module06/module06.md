@@ -2,9 +2,17 @@
 
 [< Previous Module](../module05/module05.md) - **[Home](../README.md)** - [Next Module >](../module07/module07.md)
 
+## :loudspeaker: Introduction
+
+The objective for this module is to move data from the silver layer to gold layer using a stored procedure and a Serverless Pool. In this example you will use an external table format, which stored data into Parquet. You will use two stored procedures and add a delete step to the data pipeline.
+
 ## :dart: Objectives
 
-* The objective for this module is to move data from the silver layer to gold layer using a stored procedure and a Serverless Pool. In this example you will use an external table format, which stored data into Parquet. You will use two stored procedures and add a delete step to the data pipeline.
+* Create external tables on your silver layer
+* Create ETL scripts for transforming data into your gold layer
+* Create a stored procedure for your ETL script
+* Configure your pipeline
+* Use serverless technologies for cost-effectively processing data
 
 ## 1. Create External Tables
 
@@ -91,7 +99,7 @@
 
     ![Drop external table](../module06/screen04.png)
 
-6. The parquet files on your storate account will still exist. Therefore we need to modify the data pipeline to ensure also the directory and parquet files will be deleted. Drag and drop the delete action from the General section. Select your storage account and navigate to your gold layer, select your demodatabase. Under Source, select **File path in dataset**. Also ensure **Recursive** is selected.
+6. The parquet files on your storage account will still exist. Therefore we need to modify the data pipeline to ensure also the directory and parquet files will be deleted. Drag and drop the delete action from the General section. Select your storage account and navigate to your gold layer, select your demodatabase. Under Source, select **File path in dataset**. Also ensure **Recursive** is selected.
 
     ![Create delete step](../module06/screen05.png)
 

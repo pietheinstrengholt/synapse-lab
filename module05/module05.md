@@ -2,9 +2,17 @@
 
 [< Previous Module](../module04/module04.md) - **[Home](../README.md)** - [Next Module >](../module06/module06.md)
 
+## :loudspeaker: Introduction
+
+The objective for this module is to transform data using Azure Data Flows. Data Flows is code-free solution for transforming data. It part of Synapse Analytics and can be used to perform common actions like joining, aggregating, pivoting, and sorting. As you build, you see logical diagrams and previews of your data. You use Data Flows within your data pipeline. Data flows also support parameters. This means you can design or build a reusable transformation step and reuse this across many different pipelines. The objective of this module is to show how to transform data by filtering, joining and selecting different datasets.
+
+Note: the purpose of this lab is to show you an alternative to programmatically building your ETL pipelines by creating a new pipeline. No-code ETL is typically easier to learn and maintain. In the next lab you will continue using the pipeline from the previous labs.
+
 ## :dart: Objectives
 
-* The objective for this module is to transform data using Azure Data Flows. Data Flows is code-free solution for transforming data. It part of Synapse Analytics and can be used to perform common actions like joining, aggregating, pivoting, and sorting. As you build, you see logical dragrams and previews of your data. You use Data Flows within your data pipeline. Data flows also support parameters. This means you can design or build a reusable transformation step and reuse this across many different pipelines. The objective of this module is to show how to transform data by filtering, joining and selecting different datasets.
+* Create a Data Flow (visual ETL flow)
+* Configure a new pipeline
+* Explorer the results of your pipeline
 
 ## 1. Transforming data using Data Flows
 

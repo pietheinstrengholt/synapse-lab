@@ -4,7 +4,17 @@
 
 ## :dart: Objectives
 
-* Processing data within data lakes is a complicated task. The variety and multitude of sources quickly make data pipelines chaotic and difficult to handle. A solution for this problem is to follow the mantra of ‘code once use often’ by making your pipelines more dynamic and configurable. The objective for this module is to create such a dynamic pipeline. You will use it move data from your Bronze layer into the Silver layer. In the bronze layer data typically has different file types and formats, while in the Silver layer you standardize on a fixed file format. In this module you will use Delta as the standardized file format. You will also use Spark to process your data.
+## :loudspeaker: Introduction
+
+Processing data within data lakes is a complicated task. The variety and multitude of sources quickly make data pipelines chaotic and difficult to handle. A solution for this problem is to follow the mantra of ‘code once use often’ by making your pipelines more dynamic and configurable. The objective for this module is to create such a dynamic pipeline. You will use it move data from your Bronze layer into the Silver layer. In the bronze layer data typically has different file types and formats, while in the Silver layer you standardize on a fixed file format. In this module you will use Delta as the standardized file format. You will also use Spark to process your data.
+
+## :dart: Objectives
+
+* Create a Spark Pool
+* Create and test a Notebook
+* Configure your pipeline with parameters
+* Transform data from the bronze to silver layer
+* Validate and query delta files
 
 ## 1. Deploy Spark Pool and create Notebook
 

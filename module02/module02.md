@@ -2,6 +2,10 @@
 
 [< Previous Module](../module01/module01.md) - **[Home](../README.md)** - [Next Module >](../module03/module03.md)
 
+## :loudspeaker: Introduction
+
+In this hands-on-lab, you will to create a SQL Server database with AdventureWorks sample data. This lab is a prerequisite activity for the next lab modules. 
+
 ## :dart: Objectives
 
 * Create an Azure SQL database using Sample content.

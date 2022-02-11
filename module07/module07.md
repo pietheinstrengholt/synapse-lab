@@ -2,9 +2,15 @@
 
 [< Previous Module](../module06/module06.md) - **[Home](../README.md)** - [Next Module >](../module08/module08.md)
 
+## :loudspeaker: Introduction
+
+The objective for this module is to move data from the gold layer to a powerful MPP (Massively Parallel Processing) distributed query engine: Dedicated SQL pool. Dedicated Pools, contrasting to Serverless Pools, store data in their own storage layer and are a good for workloads that require strong performance. Serverless Pools, as you learned in the previous labs, don't have their own database. They read data from the storage accounts. Data in dedicated pools is distributed over many shards using different distribution patterns: replicated, hash or round-robin. In this lab you'll use a clustered columnstore index to replicate a table over many nodes using a column key. 
+
 ## :dart: Objectives
 
-* The objective for this module is to move data from the gold layer to a dedicated SQL pool.
+* Deploy a dedicated pool.
+* Create a script for copying data from the gold layer to a dedicated pool
+* Query data from your dedicated pool tables
 
 ## 1. Deploy Dedicated Pool
 
@@ -107,6 +113,7 @@
 
 In this module module you learned how to provision and use a dedicated SQL Pool. You learned to copy data from an external table into a new data in your dedicated pool. Additional information:
 
+- https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-overview-what-is
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute
 
 [Continue >](../module08/module08.md)

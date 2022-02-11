@@ -9,7 +9,7 @@
 
 ## :loudspeaker: Introduction
 
-To create and use the Azure Synapse workspace, you will need to provision an Azure Synapse account.
+In this hands-on-lab, you will to create and use an Azure Synapse workspace. This lab is a prerequisite activity for the next lab modules. 
 
 ## :dart: Objectives
 

@@ -106,12 +106,57 @@ The objective for this module is to move data from the gold layer to a powerful 
 
     ![Transfer data](../module07/screen04.png)
 
+5. In the previous step you created a table, which is stored in the dedicated pool itself. However, for dedicated pools, you can also create external tables that read data from storage accounts. To demonstrate this you make use of the data you created in the gold layer. Open a new notebook and copy paste the following SQL code. Hit execute:
+
+    ```sql
+    IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') 
+        CREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] 
+        WITH ( FORMAT_TYPE = PARQUET)
+    GO
+
+    IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'synapsedeltademo_synapsedeltademo_dfs_core_windows_net') 
+        CREATE EXTERNAL DATA SOURCE [synapsedeltademo_synapsedeltademo_dfs_core_windows_net] 
+        WITH (
+            LOCATION = 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net' 
+        )
+    GO
+
+    CREATE EXTERNAL TABLE externalCustomerAddresses (
+        [CustomerId] int,
+        [Title] nvarchar(4000),
+        [Firstname] nvarchar(4000),
+        [MiddleName] nvarchar(4000),
+        [LastName] nvarchar(4000),
+        [Suffix] nvarchar(4000),
+        [AddressType] nvarchar(4000),
+        [AddressLine1] nvarchar(4000),
+        [AddressLine2] nvarchar(4000),
+        [City] nvarchar(4000),
+        [StateProvince] nvarchar(4000),
+        [CountryRegion] nvarchar(4000),
+        [PostalCode] nvarchar(4000)
+        )
+        WITH (
+        LOCATION = 'gold/demodatabase/customeraddresses',
+        DATA_SOURCE = [synapsedeltademo_synapsedeltademo_dfs_core_windows_net],
+        FILE_FORMAT = [SynapseParquetFormat]
+        )
+    GO
+
+    SELECT TOP 100 * FROM dbo.externalCustomerAddresses
+    GO
+    ```
+
+    ![External table](../module07/screen05.png)
+
+
+
 <div align="right"><a href="#module-07---create-and-use-a-dedicated-sql-pool">↥ back to top</a></div>
 
 
 ## :tada: Summary
 
-In this module module you learned how to provision and use a dedicated SQL Pool. You learned to copy data from an external table into a new data in your dedicated pool. Additional information:
+In this module module you learned how to provision and use a dedicated SQL Pool. You learned to copy data from an external table into a new data in your dedicated pool. You also learned to use external tables within your dedicated pool. Additional information:
 
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-overview-what-is
 - https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-tables-distribute

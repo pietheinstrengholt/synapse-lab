@@ -26,5 +26,6 @@ In this hands-on lab, you will look at the process of creating an end-to-end sol
 7. [Create and use a Dedicated SQL Pool](./module07/module07.md)
 8. [Analyze data using Azure Synapse Data Explorer](./module08/module08.md)
 9. [Data governance with Azure Purview](./module09/module09.md)
+10. [Implement version control using Git](./module10/module10.md)
 
 <div align="right"><a href="#azure-synapse-workshop">↥ back to top</a></div>

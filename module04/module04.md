@@ -182,14 +182,32 @@ Processing data within data lakes is a complicated task. The variety and multitu
     %%spark
     spark.sql("CREATE TABLE delta.Customer USING DELTA LOCATION 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net/silver/demodatabase/SalesLT.Customer'")
 
+    %%spark
+    spark.sql("CREATE TABLE delta.CustomerAddress USING DELTA LOCATION 'abfss://synapsedeltademo@synapsedeltademo.dfs.core.windows.net/silver/demodatabase/SalesLT.CustomerAddress'")
+
     %%sql
     DESCRIBE delta.Customer
 
     %%sql
     DESCRIBE HISTORY delta.Customer
 
+    %%pyspark
+    df = (spark
+    .read.format("delta")
+    .option("timestampAsOf", "2021-12-30 15:10:39")
+    .load("/silver/demodatabase/SalesLT.Customer/")
+    )
+
+    %%pyspark
+    df.show()
+
     %%sql
-    RESTORE TABLE delta.Customer TO VERSION AS OF 15
+    SELECT * FROM delta.Customer a
+    JOIN delta.CustomerAddress b
+    on a.CustomerID = b.CustomerID
+
+    %%spark
+    display(spark.sql("SELECT * FROM delta.Customer a JOIN delta.CustomerAddress b on a.CustomerID = b.CustomerID"))
     ```
 
     ![Validate SCD2](../module04/screen08.png)  

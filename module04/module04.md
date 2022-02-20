@@ -192,6 +192,7 @@ Processing data within data lakes is a complicated task. The variety and multitu
     DESCRIBE HISTORY delta.Customer
 
     %%pyspark
+    # Unfortunately, it is not possible to time travel with Delta Lake with a SQL command within the integrated notebooks in Synapse on a spark spool, but it is possible when you load the data into a dataframe with PySpark.
     df = (spark
     .read.format("delta")
     .option("timestampAsOf", "2021-12-30 15:10:39")
